@@ -9,8 +9,13 @@ INC_PATH = ./include/ $(LIB_PATH)libft/include/ $(LIB_PATH)glfw/include/ \
 
 GCC_FLGS = -g #-Werror -Wextra -Wall -pedantic -g3
 
-GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo -DGLEW_STATIC
-
+#GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo -DGLEW_STATIC
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	GCC_LIBS = -lglut -lGL -lglfw3
+else
+	GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo -DGLEW_STATIC
+endif
 #GCC_LIBS = -framework Carbon -framework OpenGL -framework GLUT
 SRC_NAME = main.c
 

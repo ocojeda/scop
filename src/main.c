@@ -1,5 +1,5 @@
-#include "scop.h"
-
+#include "../include/scop.h"
+/*
 size_t	ft_strlen(const char *str)
 {
 	size_t i;
@@ -109,66 +109,187 @@ GLuint			create_shader(char *filename, int shader_type)
 	// if (!success)
 	// 	return -1;
 	return (shader);
+}*/
+
+double rX=0;
+// Rotate Y
+double rY=0;
+
+// The coordinates for the vertices of the cube
+double x = 0.6;
+double y = 0.6;
+double z = 0.6;
+
+void drawCube()
+{
+        // Set Background Color
+    glClearColor(0.4, 0.4, 0.4, 1.0);
+        // Clear screen
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Reset transformations
+    glLoadIdentity();
+
+    // Rotate when user changes rX and rY
+    glRotatef( rX, 1.0, 0.0, 0.0 );
+    glRotatef( rY, 0.0, 1.0, 0.0 );
+
+    // BACK
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.4, 0.3, 0.5);
+                glVertex3f(x, y, z);
+                glVertex3f(x, -y, z);
+                glVertex3f(-x, y, z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.5, 0.3, 0.2);
+                glVertex3f(-x, -y, z);
+                glVertex3f(x, -y, z);
+                glVertex3f(-x, y, z);
+        glEnd();
+
+        // FRONT
+        // Using 4 trianges!
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.1, 0.5, 0.3);
+                glVertex3f(-x, y, -z);
+                glVertex3f(0, 0, -z);
+                glVertex3f(-x, -y, -z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+                glColor3f(0.0, 0.5, 0.0);
+                glVertex3f(-x, -y, -z);
+                glVertex3f(0, 0, -z);
+                glVertex3f(x, -y, -z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.1, 0.3, 0.3);
+                glVertex3f(-x, y, -z);
+                glVertex3f(x, y, -z);
+                glVertex3f(0, 0, -z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+                glColor3f(0.2, 0.2, 0.2);
+                glVertex3f(0, 0, -z);
+                glVertex3f(x, y, -z);
+                glVertex3f(x, -y, -z);
+        glEnd();
+
+        // LEFT
+        glBegin(GL_TRIANGLES);
+        glColor3f(0.3, 0.5, 0.6);
+                glVertex3f(-x, -y, -z);
+                glVertex3f(-x, -y, z);
+                glVertex3f(-x, y, -z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+                glColor3f(0.5, 0.5, 0.5);
+                glVertex3f(-x, y, z);
+                glVertex3f(-x, -y, z);
+                glVertex3f(-x, y, -z);
+        glEnd();
+
+        // RIGHT
+        glBegin(GL_TRIANGLES);
+        glColor3f(0.2, 0.2, 0.2);
+                glVertex3f(x, y, z);
+                glVertex3f(x, y, -z);
+                glVertex3f(x, -y, z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+        glColor3f(0.0, 0.0, 0.0);
+                glVertex3f(x, -y, -z);
+                glVertex3f(x, y, -z);
+                glVertex3f(x, -y, z);
+        glEnd();
+
+        // TOP
+        glBegin(GL_TRIANGLES);
+        glColor3f(0.6, 0.0, 0.0);
+                glVertex3f(x, y, z);
+                glVertex3f(x, y, -z);
+                glVertex3f(-x, y, -z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+        glColor3f(0.6, 0.1, 0.2);
+                glVertex3f(-x, y, z);
+                glVertex3f(x, y, z);
+                glVertex3f(-x, y, -z);
+        glEnd();
+
+        // BOTTOM
+        glBegin(GL_TRIANGLES);
+        glColor3f(0.4, 0.0, 0.4);
+                glVertex3f(-x, -y, -z);
+                glVertex3f(-x, -y, z);
+                glVertex3f(x, -y, z);
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+                glColor3f(0.3, 0.0, 0.3);
+                glVertex3f(x, -y, -z);
+                glVertex3f(-x, -y, -z);
+                glVertex3f(x, -y, z);
+        glEnd();
+
+    glFlush();
+    glutSwapBuffers();
 }
 
-int main(void)
+void keyboard(int key, int x, int y)
 {
+    if (key == GLUT_KEY_RIGHT)
+        {
+                rY += 15;
+        }
+    else if (key == GLUT_KEY_LEFT)
+        {
+                rY -= 15;
+        }
+    else if (key == GLUT_KEY_DOWN)
+        {
+                rX -= 15;
+        }
+    else if (key == GLUT_KEY_UP)
+        {
+                rX += 15;
+        }
 
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL); // Windowed
-glfwMakeContextCurrent(window);
-
-
-float vertices[] = {0.0f,  0.5f, 0.5f, -0.5f, -0.5f, -0.5f};
-GLuint vbo;
-
-
-GLuint	shader_vert;
-GLuint	shader_frag;
-
-
-
-GLuint vao;
-glGenVertexArrays(1, &vao);
-glBindVertexArray(vao);
-
-glGenBuffers(1, &vbo);
-glBindBuffer(GL_ARRAY_BUFFER, vbo);
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-shader_vert = create_shader("./Shaders/basiquevert.glsl", GL_VERTEX_SHADER);
-shader_frag = create_shader("./Shaders/basiquefrag.glsl", GL_FRAGMENT_SHADER);
-GLuint	shader_program = create_shader_program(shader_vert, shader_frag);
-
-    glBindFragDataLocation(shader_program, 0, "outColor");
-    glLinkProgram(shader_program);
-    glUseProgram(shader_program);
-	
-	GLint posAttrib = glGetAttribLocation(shader_program, "position");
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-
-
-while(!glfwWindowShouldClose(window))
-{
-	
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
-
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, GL_TRUE);
+    // Request display update
+    glutPostRedisplay();
 }
-    glfwTerminate();
-	return 0;
+
+
+int main(int argc, char **argv)
+{
+        // Initialize GLUT and process user parameters
+        glutInit(&argc, argv);
+
+        // Request double buffered true color window with Z-buffer
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+
+        glutInitWindowSize(700,700);
+        glutInitWindowPosition(100, 100);
+
+        // Create window
+        glutCreateWindow("Scop");
+
+        // Enable Z-buffer depth test
+        glEnable(GL_DEPTH_TEST);
+
+        // Callback functions
+        glutDisplayFunc(drawCube);
+        glutSpecialFunc(keyboard);
+
+        // Pass control to GLUT for events
+        glutMainLoop();
+
+        return 0;
 }
