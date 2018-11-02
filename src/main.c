@@ -97,15 +97,28 @@ void renderScene(void) {
 				x+lx, 1.0f,  z+lz,
 				0.0f, 1.0f,  0.0f);
 	
-	        glBegin(GL_QUADS);
-            glColor3ub(0,0,255);
-            glVertex2d(-0.75,-0.75);
-            glVertex2d(-0.75,0.75);
-            glColor3ub(255,0,0);
-            glVertex2d(0.75,0.75);
-            glVertex2d(0.75,-0.75);
-        glEnd();
- 
+    glBegin(GL_QUADS);
+
+    glColor3ub(255,0,0); //face rouge
+    glVertex3d(1,1,1);
+    glVertex3d(1,1,-1);
+    glVertex3d(-1,1,-1);
+    glVertex3d(-1,1,1);
+
+    glColor3ub(0,255,0); //face verte
+    glVertex3d(1,-1,1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(1,1,-1);
+    glVertex3d(1,1,1);
+
+    glColor3ub(0,0,255); //face bleue
+    glVertex3d(-1,-1,1);
+    glVertex3d(-1,-1,-1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(1,-1,1);
+
+ glEnd();
+ glFlush();
 	glutSwapBuffers();
 }
 
@@ -141,12 +154,12 @@ int main(int argc, char **argv) {
 	glutCreateWindow("Scop");
 
 	// register callbacks
-
+	glEnable(GL_DEPTH_TEST);
 
 
 	while(glutGetWindow())
 	{
-	glutDisplayFunc(renderScene);
+		glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
 	glutIdleFunc(renderScene);
 
@@ -157,7 +170,7 @@ int main(int argc, char **argv) {
 	glutSpecialUpFunc(releaseKey);
 
 	// OpenGL init
-	glEnable(GL_DEPTH_TEST);
+	
 
 	// enter GLUT event processing cycle
 	glutKeyboardFunc(pressKey);
