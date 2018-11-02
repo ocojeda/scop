@@ -12,7 +12,7 @@ GCC_FLGS = -g #-Werror -Wextra -Wall -pedantic -g3
 #GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo -DGLEW_STATIC
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	GCC_LIBS = -lglut -lGL -lglfw3
+	GCC_LIBS = -lglut -lGL -lglfw3 -lm -lGLU
 else
 	GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo -DGLEW_STATIC
 endif
