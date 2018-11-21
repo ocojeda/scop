@@ -1,9 +1,9 @@
 // Version du GLSL
 
-#version 130 
+#version 150 core
 
 
-// EntrÃ©e
+// Entrée
 
 in vec3 color;
 

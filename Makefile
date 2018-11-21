@@ -17,7 +17,7 @@ else
 	GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo -DGLEW_STATIC
 endif
 #GCC_LIBS = -framework Carbon -framework OpenGL -framework GLUT
-SRC_NAME = main.c
+SRC_NAME = main.c triangle.c vector.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 LIB_NAME = glfw/src

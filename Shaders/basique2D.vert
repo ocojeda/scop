@@ -1,11 +1,10 @@
 // Version du GLSL
 
-#version 150 core
+#version 130
 
+// Entrï¿½e Shader
 
-// Entrée Shader
-
-in vec2 in_Vertex;
+in vec3 in_Vertex;
 
 
 // Fonction main
@@ -13,6 +12,6 @@ in vec2 in_Vertex;
 void main()
 {
     // Position finale du vertex
-
-    gl_Position = vec4(in_Vertex, 0.0, 1.0);
+    
+    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }

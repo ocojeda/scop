@@ -1,14 +1,9 @@
 // Version du GLSL
 
-#version 130 
+#version 150 core
 
 
-// Entrée
-
-in vec3 color;
-
-
-// Sortie 
+// Sortie Shader
 
 out vec4 out_Color;
 
@@ -19,5 +14,5 @@ void main()
 {
     // Couleur finale du pixel
 
-    out_Color = vec4(color, 1.0);
+    out_Color = vec4(1.0, 1.0, 1.0, 1.0);
 }
