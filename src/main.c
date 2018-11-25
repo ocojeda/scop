@@ -3,12 +3,18 @@
 #include <stdio.h>
 #include <math.h>
 
+    // glVertex3d(-1,-1,1);
+    // glVertex3d(-1,-1,-1);
+    // glVertex3d(1,-1,-1);
 
-float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-};  
+    float vertices[] = {
+        // positions         // colors
+         5.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top 
+    };
+    float pos[] = {
+         0.5f, -0.5f, 0.0f};
 
 char* LoadSource(const char *filename)
 {
@@ -105,7 +111,8 @@ void computeDir(float deltaAngle) {
 }
 
 
-void renderScene(void) {
+void renderScene(context env) {
+    
 
 	if (deltaMove)
 		computePos(deltaMove);
@@ -122,9 +129,7 @@ void renderScene(void) {
 	gluLookAt(	x, 1.0f, z,
 				x+lx, 1.0f,  z+lz,
 				0.0f, 1.0f,  0.0f);
-	
-
-
+                
     glBegin(GL_TRIANGLES);
     glColor3ub(255,0,0); //face rouge
 	vector_gl a = ini_vector_gl(-1, 1, -1);
@@ -265,11 +270,33 @@ int init_glut(int argc, char **argv, context env)
 	// register callbacks
 	glEnable(GL_DEPTH_TEST);
     env.prgm = glCreateProgram();
+ 
     env.fract = LoadShader(GL_FRAGMENT_SHADER, "Shaders/basique2D.frag");
 	env.shader = LoadShader(GL_VERTEX_SHADER, "Shaders/basique2D.vert");
-	glAttachShader(env.prgm, env.shader);
+
+
+    glAttachShader(env.prgm, env.shader);
     glAttachShader(env.prgm, env.fract);
-	return (glutGetWindow());
+	
+    
+    glGenVertexArrays(1, &env.VAO);
+    glGenBuffers(1, &env.VBO);
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(env.VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, env.VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    
+    glBindAttribLocation(env.prgm, 0, "pos");
+    glBindAttribLocation(env.prgm, 1, "col");
+    return (glutGetWindow());
 }
 
 int main(int argc, char **argv) {
@@ -280,15 +307,12 @@ int main(int argc, char **argv) {
 	if(!init_glut(argc, argv, env))
 		return -1;
     glLinkProgram(env.prgm);
-	
 	while(glutGetWindow())
 	{
         glUseProgram(env.prgm);
-		
         glutDisplayFunc(renderScene);
 		glutReshapeFunc(changeSize);
 		glutIdleFunc(renderScene);
-
 
 		glutSpecialFunc(pressKey);
 

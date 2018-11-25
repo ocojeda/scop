@@ -1,7 +1,6 @@
 // Version du GLSL
 
-#version 130 
-
+#version 450
 
 // Entrée
 

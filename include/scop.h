@@ -43,8 +43,8 @@ typedef struct context_st
     GLuint shader;
     GLuint fract;
     GLuint array;
-    
-
+    GLuint VBO;
+    GLuint VAO;
 
 } context;
 

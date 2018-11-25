@@ -6,7 +6,6 @@
 
 in vec3 in_Vertex;
 
-
 // Fonction main
 
 void main()
