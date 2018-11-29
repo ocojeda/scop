@@ -12,7 +12,7 @@ GCC_FLGS = -g #-Werror -Wextra -Wall -pedantic -g3
 GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo -DGLEW_STATIC
 
 #GCC_LIBS = -framework Carbon -framework OpenGL -framework GLUT
-SRC_NAME = main.c gl_funcs.c ft_strings.c
+SRC_NAME = main.c gl_funcs.c events_scop.c ft_strings.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 LIB_NAME = glfw/src

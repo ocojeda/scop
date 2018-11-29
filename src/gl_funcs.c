@@ -3,11 +3,16 @@
 //vertices has to be gone, jsut a test for the objects, it works =)
 
 float vertices[] = {
-		// positions         // colors
-		 0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-		-0.5f, 0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-		 0.0f,  -0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top
-	};
+    // positions          // colors           // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+};
+unsigned int indices[] = {  
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
 
 GLuint			create_shader_program(GLuint shader_vert, GLuint shader_frag)
 {
@@ -197,18 +202,25 @@ int create_prog(t_env *env)
 	// create an array of objects and bind them to the program
 	glGenVertexArrays(1, &env->array);
 	glGenBuffers(1, &env->buf);
+    glGenBuffers(1, &env->EBO);
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 	glBindVertexArray(env->array);
 
 	glBindBuffer(GL_ARRAY_BUFFER, env->buf);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1); 
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
     return (1);
 };
 
@@ -222,7 +234,7 @@ t_env init_scop(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-    env.win = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL); // Windowed
+    env.win = glfwCreateWindow(800, 600, "Scop", NULL, NULL); // Windowed
     glfwMakeContextCurrent(env.win);
     return (env);
 };

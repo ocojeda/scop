@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
+
 #include <stdio.h>
 
 typedef struct t_env_st 
@@ -19,16 +20,24 @@ typedef struct t_env_st
     GLuint frag;
     GLuint array;
     GLuint buf;
+    GLuint EBO;
+
+    GLuint p_text;
+    int    flag_texture;
+
     GLFWwindow* win;
 }           t_env;
 
 t_env init_scop(void);
 int create_prog(t_env *env);
+void    events_scop(t_env *env);
+
 
 size_t	ft_strlen(const char *str);
 int		ft_strdel(char **as);
 char	*ft_strnew(size_t size);
 char	*ft_strjoin(char const *s1, char const *s2);
+
 
 
 #endif
