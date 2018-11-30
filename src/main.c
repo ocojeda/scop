@@ -3,17 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, t_env *env)
-{
-	if (key == 32)
-	{
-	    if (env->flag_texture == 0)
-            env->flag_texture = 1;
-        else    
-            env->flag_texture = 0;
-	}
-}
-
 int main(void)
 {
 
@@ -40,11 +29,12 @@ int main(void)
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	unsigned int p_text = glGetUniformLocation(env.prgm, "text_flag");
-	env.flag_texture = 0;
+	env.flag_texture = 1;
 	glUniform1f(p_text, env.flag_texture);
 
 	while(!glfwWindowShouldClose(env.win))
 	{		
+		//glfwSetKeyCallback(env.win, key_callback);
 		events_scop(&env);
 		//glfwSetKeyCallback(env.win, key_callback);
 		// glfwSetKeyCallback(env.win, key_callback);
@@ -64,6 +54,7 @@ int main(void)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(env.win);
 		glfwPollEvents();
+		
 	}
 	glDeleteVertexArrays(1, &env.array);
 	glDeleteBuffers(1, &env.buf);
