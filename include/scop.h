@@ -9,6 +9,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <math.h>
+#include "../lib/libvec/includes/libvec.h"
+
 
 
 #include <stdio.h>

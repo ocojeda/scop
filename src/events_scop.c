@@ -15,5 +15,5 @@ void    events_scop(t_env *env)
             env->flag_texture = 0;
         }
     }        
-    printf("%d\n", GLFW_PRESS);
+    // printf("%d\n", GLFW_PRESS);
 };
