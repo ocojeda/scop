@@ -1,240 +1,93 @@
 #include "scop.h"
 
-//vertices has to be gone, jsut a test for the objects, it works =)
 
-float vertices[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-     0.5f, -0.5f, -1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
-};
-unsigned int indices[] = {  
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
-    };
-
-GLuint			create_shader_program(GLuint shader_vert, GLuint shader_frag)
+void	set_projection_matrix(t_env *env, float fov)
 {
-	GLint	success;
-	GLuint	shader_program;
+	float	s;
+	float	far;
+	float	near;
 
-	shader_program = glCreateProgram();
-	glAttachShader(shader_program, shader_vert);
-	glAttachShader(shader_program, shader_frag);
-	glBindFragDataLocation(shader_program, 0, "outColor");
-	glLinkProgram(shader_program);
-	glUseProgram(shader_program);
-	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
-	if (!success)
-		return (-1);
-	glDeleteShader(shader_vert);
-	glDeleteShader(shader_frag);
-	return (shader_program);
+	far = CAMERA_FAR;
+	near = CAMERA_NEAR;
+	s = 1 / (tan(fov * 0.5 * M_PI / 180.0));
+	mat4_set(&env->sim.projection, 0);
+	env->sim.projection.m[0] = s / env->win.ratio;
+	env->sim.projection.m[5] = s;
+	env->sim.projection.m[10] = -(far + near) / (far - near);
+	env->sim.projection.m[11] = -1;
+	env->sim.projection.m[14] = -2 * far * near / (far - near);
 }
 
-const GLchar	*get_shader_source(char *filename)
+void	init_matrices(t_env *env)
 {
-	int		fd;
-	int		ret;
-	char	buffer[BUFFER_SIZE];
-	char	*source;
-	char	*del;
-
-	source = ft_strnew(BUFFER_SIZE);
-	if ((fd = open(filename, O_RDONLY)) == -1)
-		return (0);
-	while ((ret = read(fd, buffer, BUFFER_SIZE)))
-	{
-		buffer[ret] = '\0';
-		del = source;
-		source = ft_strjoin(source, buffer);
-		ft_strdel(&del);
-	}
-	close(fd);
-	return (source);
+	mat4_set(&env->sim.model, IDENTITY);
+	mat4_set(&env->sim.view, IDENTITY);
+	set_projection_matrix(env, env->cam.fov);
+	mat4_set(&env->model.rotation, IDENTITY);
+	mat4_set(&env->model.translation, IDENTITY);
+	vec3_set(&env->model.inertia, 0);
+	vec3_set(&env->model.center_axis, 0);
 }
 
-GLuint			create_shader(char *filename, int shader_type)
+void	init_glfw_win(t_env *env)
 {
-	GLint			success;
-	GLuint			shader;
-	const GLchar	*shader_source;
+	int width;
+	int height;
 
-	shader_source = get_shader_source(filename);
-	shader = glCreateShader(shader_type);
-	glShaderSource(shader, 1, &shader_source, NULL);
-	glCompileShader(shader);
-	free((void*)shader_source);
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-		return (0);
-	return (shader);
+	env->win.ptr = glfwCreateWindow(env->win.w, env->win.h, "scop", NULL, NULL);
+	glfwMakeContextCurrent(env->win.ptr);
+	glfwGetFramebufferSize(env->win.ptr, &width, &height);
+	glViewport(0, 0, width, height);
+	glfwSetInputMode(env->win.ptr, GLFW_STICKY_KEYS, 1);
 }
 
-
-char* LoadSource(const char *filename)
+void	init_glfw_env(void)
 {
-	char *src = NULL;   /* code source de notre shader */
-	FILE *fp = NULL;    /* fichier */
-	long size;          /* taille du fichier */
-	long i;             /* compteur */
-
-
-	/* on ouvre le fichier */
-	fp = fopen(filename, "r");
-	/* on verifie si l'ouverture a echoue */
-	if(fp == NULL)
-	{
-		fprintf(stderr, "impossible d'ouvrir le fichier '%s'\n", filename);
-		return (NULL);
-	}
-
-	/* on recupere la longueur du fichier */
-	fseek(fp, 0, SEEK_END);
-	size = ftell(fp);
-
-	/* on se replace au debut du fichier */
-	rewind(fp);
-
-	/* on alloue de la memoire pour y placer notre code source */
-	src = malloc(size+1); /* +1 pour le caractere de fin de chaine '\0' */
-	if(src == NULL)
-	{
-		fclose(fp);
-		fprintf(stderr, "erreur d'allocation de memoire!\n");
-		return NULL;
-	}
-
-	/* lecture du fichier */
-	for(i=0; i<size; i++)
-		src[i] = fgetc(fp);
-
-	/* on place le dernier caractere a '\0' */
-	src[size] = '\0';
-
-	fclose(fp);
-
-	return (src);
+	if (!glfwInit())
+		ft_putstr("ERROR: glfw initialization failed.");
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, ft_atoi(&OPENGL_VERSION[0]));
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, ft_atoi(&OPENGL_VERSION[2]));
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 }
 
-GLuint LoadShader(GLenum type, const char *filename)
+void	init_cam(t_env *env)
 {
-	GLuint shader = 0;
-	GLsizei logsize = 0;
-	GLint compile_status = GL_TRUE;
-	char *log = NULL;
-	char *src = NULL;
+	t_vec3	up;
 
-	/* creation d'un shader de sommet */
-	shader = glCreateShader(type);
-	if(shader == 0)
-	{
-		fprintf(stderr, "impossible de creer le shader\n");
-		return 0;
-	}
-	/* chargement du code source */
-	if (!(src = LoadSource(filename)))
-	{
-        // fail to load the source
-		glDeleteShader(shader);
-		return 0;
-	}
-
-	/* assignation du code source */
-	glShaderSource(shader, 1, (const GLchar**)&src, NULL);
-
-	/* compilation du shader */
-	glCompileShader(shader);
-
-	/* liberation de la memoire du code source */
-	free(src);
-	src = NULL;
-
-	/* verification du succes de la compilation */
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_status);
-	if(compile_status != GL_TRUE)
-	{
-		/* erreur a la compilation recuperation du log d'erreur */
-
-		/* on recupere la taille du message d'erreur */
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logsize);
-
-		/* on alloue un espace memoire dans lequel OpenGL ecrira le message */
-		log = malloc(logsize + 1);
-		if(log == NULL)
-		{
-			fprintf(stderr, "impossible d'allouer de la memoire !\n");
-			return 0;
-		}
-		/* initialisation du contenu */
-		memset(log, '\0', logsize + 1);
-
-		glGetShaderInfoLog(shader, logsize, &logsize, log);
-		fprintf(stderr, "impossible de compiler le shader '%s' :\n%s",
-				filename, log);
-
-		/* ne pas oublier de liberer la memoire et notre shader */
-		free(log);
-		glDeleteShader(shader);
-
-		return (0);
-	}
-	return (shader);
+	up = vec3(0, 1, 0);
+	env->cam.pos = vec3(0, 0, 3);
+	env->cam.target = vec3(0, 0, 0);
+	env->cam.dir = vec3_normalize(vec3_sub(env->cam.pos, env->cam.target));
+	env->cam.right = vec3_normalize(vec3_cross(up, env->cam.dir));
+	env->cam.up = vec3_cross(env->cam.dir, env->cam.right);
+	env->cam.front = vec3_cross(env->cam.up, env->cam.right);
+	vec3_set(&env->cam.inertia, 0);
+	env->cam.velocity = 0.005;
 }
 
-int create_prog(t_env *env)
+void	init(t_env *env, int argc, char **argv)
 {
-    // load shader, coposed of a vertex for 
-    // coordinates and a fragment for the color
+	int	i;
 
-    env->vert = LoadShader(GL_VERTEX_SHADER, "Shaders/basique2D.vert");
-	env->frag = LoadShader(GL_FRAGMENT_SHADER, "Shaders/basique2D.frag");
-    if(!(env->vert) || !(env->frag))
-        return (0);
-    
-    // Create a program and link the shaders 
-	env->prgm = glCreateProgram();
-	glAttachShader(env->prgm, env->vert);
-	glAttachShader(env->prgm, env->frag);
-	glLinkProgram(env->prgm);
-
-	// create an array of objects and bind them to the program
-	glGenVertexArrays(1, &env->array);
-	glGenBuffers(1, &env->buf);
-    glGenBuffers(1, &env->EBO);
-	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(env->array);
-
-	glBindBuffer(GL_ARRAY_BUFFER, env->buf);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1); 
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    return (1);
-};
-
-t_env init_scop(void)
-{
-    t_env env;
-
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-    env.win = glfwCreateWindow(800, 600, "Scop", NULL, NULL); // Windowed
-    glfwMakeContextCurrent(env.win);
-    return (env);
-};
+	i = -1;
+	env->model.filename = "../resources/42.obj";
+	env->cam.fov = FOV;
+	env->win.w = WIN_WIDTH;
+	env->win.h = WIN_HEIGHT;
+	env->win.ratio = env->win.w / (float)env->win.h;
+	init_glfw_env();
+	init_glfw_win(env);
+	init_cam(env);
+	init_matrices(env);
+	env->mod.wireframe = GL_FILL;
+	env->mod.shading = 0;
+	env->mod.focus = 1;
+	env->mod.color = 0;
+	env->mod.greyscale = 0;
+	env->mod.mapping = 0;
+	env->mod.texture = 0;
+	env->model.velocity = 0.33;
+	env->flag_texture = 0;
+}
