@@ -1,9 +1,5 @@
 #include "scop.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
-
 void	compute_mvp_matrix(t_env *env)
 {
 	env->sim.mvp = mat4_mul(mat4_transpose(env->sim.model),
@@ -61,8 +57,6 @@ void	load_bmp(t_env *env, char *filename)
 	int		i;
 	char	*buffer;
 
-	
-	printf("%s\n", filename);
 	read_header(filename, &env->model.texture);
 	buffer = (char*)malloc(sizeof(char) * env->model.texture.size + 1);
 	if ((fd = open(filename, O_RDWR)) == -1)
@@ -77,11 +71,7 @@ void	load_bmp(t_env *env, char *filename)
 void			update_shader_uniforms(t_env *env)
 {
 	glUniformMatrix4fv(env->shader.mvploc, 1, GL_FALSE, env->sim.mvp.m);
-	glUniform1i(env->shader.smdloc, env->mod.shading);
-	glUniform1i(env->shader.cmdloc, env->mod.color);
-	glUniform1i(env->shader.gmdloc, env->mod.greyscale);
-	glUniform1i(env->shader.mmdloc, env->mod.mapping);
-	glUniform1i(env->shader.tmdloc, env->mod.texture);
+	glUniform1i(env->shader.tmdloc, env->flags.texture);
 }
 
 const GLchar	*get_shader_source(char *filename)
@@ -200,31 +190,6 @@ void	clean_glfw(t_env *env)
 	glfwTerminate();
 }
 
-
-void	glfw_loop(void)
-{
-	glfwPollEvents();
-	glClearColor(0.09f, 0.08f, 0.15f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void	translate(t_mat4 *m, t_vec3 v)
-{
-	m->m[3] += v.v[0];
-	m->m[7] += v.v[1];
-	m->m[11] += v.v[2];
-}
-
-void	rotate(t_mat4 *m, t_vec3 v)
-{
-	if (v.v[0] != 0.0)
-		*m = mat4_rotate_axis(*m, AXIS_X, v.v[0]);
-	if (v.v[1] != 0.0)
-		*m = mat4_rotate_axis(*m, AXIS_Y, v.v[1]);
-	if (v.v[2] != 0.0)
-		*m = mat4_rotate_axis(*m, AXIS_Z, v.v[2]);
-}
-
 void	model_move_inertia(t_env *env, float inertia)
 {
 	env->model.inertia = vec3_fmul(env->model.inertia, inertia);
@@ -233,7 +198,7 @@ void	model_move_inertia(t_env *env, float inertia)
 
 void	model_move_demo(t_env *env)
 {
-	rotate(&env->model.rotation, vec3(0, env->model.velocity, 0));
+	
 }
 
 int main(int argc, char **argv)
@@ -244,15 +209,15 @@ int main(int argc, char **argv)
 	load_bmp(&env, "../resources/chaton.bmp");
 	build_shader_program(&env);
 	create_buffers(&env, GL_DYNAMIC_DRAW);
-	glBindVertexArray(0);
 	glEnable(GL_DEPTH_TEST);
-	
 	while (!glfwWindowShouldClose(env.win.ptr))
 	{
-		glfw_loop();
-		key_handle(&env);
+		glfwPollEvents();
+		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		events_scop(&env);
-		env.sim.model = mat4_mul(env.model.translation, env.model.rotation);
+		
 		glUseProgram(env.shader.program);
 		compute_mvp_matrix(&env);
 		update_shader_uniforms(&env);

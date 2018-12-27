@@ -64,7 +64,6 @@ void	init_cam(t_env *env)
 	env->cam.up = vec3_cross(env->cam.dir, env->cam.right);
 	env->cam.front = vec3_cross(env->cam.up, env->cam.right);
 	vec3_set(&env->cam.inertia, 0);
-	env->cam.velocity = 0.005;
 }
 
 void	init(t_env *env, int argc, char **argv)
@@ -72,7 +71,7 @@ void	init(t_env *env, int argc, char **argv)
 	int	i;
 
 	i = -1;
-	env->model.filename = "../resources/42.obj";
+	env->model.filename = "../resources/teapot.obj";
 	env->cam.fov = FOV;
 	env->win.w = WIN_WIDTH;
 	env->win.h = WIN_HEIGHT;
@@ -81,13 +80,5 @@ void	init(t_env *env, int argc, char **argv)
 	init_glfw_win(env);
 	init_cam(env);
 	init_matrices(env);
-	env->mod.wireframe = GL_FILL;
-	env->mod.shading = 0;
-	env->mod.focus = 1;
-	env->mod.color = 0;
-	env->mod.greyscale = 0;
-	env->mod.mapping = 0;
-	env->mod.texture = 0;
-	env->model.velocity = 0.33;
-	env->flag_texture = 0;
+	env->flags.texture = 0;
 }

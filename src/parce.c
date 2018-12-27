@@ -71,14 +71,12 @@ GLuint	*append_indices(GLuint *array, char *line, int *length)
 	int		j;
 	int		m;
 	char	**tab;
-	int what = 0;
 
 	tab = ft_strsplit(&line[1], ' ');
 	m = array_len((void**)tab) == 4 ? 6 : 3;
 	*length += m;
 	array = gluint_array_copy(array, *length, m);
 	j = -1;
-	GLuint perso = 0;
 	while (++j < 3)
 	{
 		array[*length - m + j] = (GLuint)ft_atoi(tab[j]) - 1;
@@ -86,10 +84,7 @@ GLuint	*append_indices(GLuint *array, char *line, int *length)
 			array[*length - m + 3 + j] =
 			(GLuint)ft_atoi(tab[j > 0 ? j + 1 : 0]) - 1;
 		ft_strdel(&tab[j]);
-		perso = array[*length - m + j];
-		printf("%i , ", perso);
 	}
-	printf("%s / m = %i \n", line, m);
 	ft_strdel(&tab[j]);
 	free(tab);
 	tab = NULL;
@@ -155,7 +150,6 @@ void	load_obj(t_env *e, char *filename)
 	f = 0;
 	e->model.vertices = (GLfloat*)malloc(sizeof(GLfloat) * 3);
 	e->model.indices = (GLuint*)malloc(sizeof(GLuint) * 3);
-	printf("%s\n", filename);
 	if ((fd = open(filename, O_RDWR)) == -1)
 		error("obj file opening failed.");
 	while (get_next_line(fd, &line) > 0)

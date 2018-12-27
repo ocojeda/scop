@@ -1,5 +1,22 @@
 #include "scop.h"
 
+void	translate(t_mat4 *m, t_vec3 v)
+{
+	m->m[3] += v.v[0];
+	m->m[7] += v.v[1];
+	m->m[11] += v.v[2];
+}
+
+void	rotate(t_mat4 *m, t_vec3 v)
+{
+	if (v.v[0] != 0.0)
+		*m = mat4_rotate_axis(*m, AXIS_X, v.v[0]);
+	if (v.v[1] != 0.0)
+		*m = mat4_rotate_axis(*m, AXIS_Y, v.v[1]);
+	if (v.v[2] != 0.0)
+		*m = mat4_rotate_axis(*m, AXIS_Z, v.v[2]);
+}
+
 t_mat4 init_matrix(float x, float y, float z, float m)
 {
 	t_mat4 ini;
