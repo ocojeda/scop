@@ -82,7 +82,7 @@ typedef struct s_cam
 	t_vec3	up;
 	t_vec3	right;
 	t_vec3	front;
-	t_vec3	inertia;
+	
 	float	fov;
 }   t_cam;
 
@@ -96,7 +96,7 @@ typedef struct	s_model
 	unsigned int	size_vertices;
 	unsigned int	num_indices;
 	t_vec3			center_axis;
-	t_vec3			inertia;
+	
 	t_texture		texture;
 	float			velocity;
 	char			*filename;
@@ -117,14 +117,12 @@ typedef struct t_env_st
 
 void	init(t_env *env, int argc, char **argv);
 
-void	camera_move_inertia(t_env *e, float inertia, int mode);
 void	camera_look_at_target(t_env *env);
 void	camera_center(t_env *env);
 void	translate(t_mat4 *m, t_vec3 v);
 void	rotate(t_mat4 *m, t_vec3 v);
 
-void	model_move_demo(t_env *env);
-void	model_move_inertia(t_env *env, float inertia);
+
 void    events_scop(t_env *env);
 
 #endif

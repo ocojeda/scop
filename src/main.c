@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/20 09:22:07 by ocojeda-          #+#    #+#             */
+/*   Updated: 2019/01/20 15:18:14 by ocojeda-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
 void	compute_mvp_matrix(t_env *env)
@@ -13,7 +25,7 @@ void	read_header(char *filename, t_texture *texture)
 	FILE	*file;
 
 	if ((file = fopen(filename, "r")) == NULL)
-		error("bmp file opening (fopen) failed.");
+		ft_error("bmp file opening (fopen) failed.");
 	fseek(file, 18, SEEK_SET);
 	fread(&texture->w, 4, 1, file);
 	fread(&texture->h, 4, 1, file);
@@ -60,7 +72,7 @@ void	load_bmp(t_env *env, char *filename)
 	read_header(filename, &env->model.texture);
 	buffer = (char*)malloc(sizeof(char) * env->model.texture.size + 1);
 	if ((fd = open(filename, O_RDWR)) == -1)
-		error("bmp file opening failed.");
+		ft_error("bmp file opening failed.");
 	lseek(fd, 54, SEEK_SET);
 	i = read(fd, buffer, env->model.texture.size);
 	get_image(&env->model.texture, buffer, i);
@@ -84,7 +96,7 @@ const GLchar	*get_shader_source(char *filename)
 
 	source = ft_strnew(BUFFER_SIZE);
 	if ((fd = open(filename, O_RDONLY)) == -1)
-		error("shader source file opening failed.");
+		ft_error("shader source file opening failed.");
 	while ((ret = read(fd, buffer, BUFFER_SIZE)))
 	{
 		buffer[ret] = '\0';
@@ -109,7 +121,7 @@ GLuint			create_shader(char *filename, int shader_type)
 	free((void*)shader_source);
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success)
-		error("shader compilation failed.");
+		ft_error("shader compilation failed.");
 	return (shader);
 }
 
@@ -124,7 +136,7 @@ GLuint			create_shader_program(GLuint shader_vert, GLuint shader_frag)
 	glLinkProgram(shader_program);
 	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
 	if (!success)
-		error("shader program compilation failed.");
+		ft_error("shader program compilation failed.");
 	glDeleteShader(shader_vert);
 	glDeleteShader(shader_frag);
 	return (shader_program);
@@ -187,19 +199,11 @@ void	clean_glfw(t_env *env)
 	glDeleteVertexArrays(1, &env->buffer.vao);
 	glDeleteBuffers(1, &env->buffer.vbo);
 	glDeleteBuffers(1, &env->buffer.ebo);
+	free(env->model.filename);
 	glfwTerminate();
 }
 
-void	model_move_inertia(t_env *env, float inertia)
-{
-	env->model.inertia = vec3_fmul(env->model.inertia, inertia);
-	translate(&env->model.translation, env->model.inertia);
-}
 
-void	model_move_demo(t_env *env)
-{
-	
-}
 
 int main(int argc, char **argv)
 {
@@ -215,9 +219,7 @@ int main(int argc, char **argv)
 		glfwPollEvents();
 		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
 		events_scop(&env);
-		
 		glUseProgram(env.shader.program);
 		compute_mvp_matrix(&env);
 		update_shader_uniforms(&env);
@@ -228,6 +230,5 @@ int main(int argc, char **argv)
 		glfwSwapBuffers(env.win.ptr);
 	}
 	clean_glfw(&env);
-
 	return 0;
 }

@@ -3,12 +3,13 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: wwatkins <wwatkins@student.42.fr>          +#+  +:+       +#+         #
+#    By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2016/12/01 16:43:17 by wwatkins          #+#    #+#              #
-#    Updated: 2016/12/10 18:05:50 by wwatkins         ###   ########.fr        #
+#    Created: 2019/01/20 09:24:56 by ocojeda-          #+#    #+#              #
+#    Updated: 2019/01/20 09:24:57 by ocojeda-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/

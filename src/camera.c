@@ -1,14 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   camera.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/20 09:21:44 by ocojeda-          #+#    #+#             */
+/*   Updated: 2019/01/20 14:58:24 by ocojeda-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "scop.h"
-
-void	camera_center(t_env *env)
-{
-	t_vec3	model_pos;
-
-	model_pos.v[0] = env->model.translation.m[3];
-	model_pos.v[1] = env->model.translation.m[7];
-	model_pos.v[2] = env->model.translation.m[11];
-	env->cam.target = vec3_add(env->model.center_axis, model_pos);
-}
 
 void	camera_look_at_target(t_env *env)
 {
@@ -33,16 +35,4 @@ void	camera_look_at_target(t_env *env)
 	view.m[13] = -vec3_dot(tmp, env->cam.pos);
 	view.m[14] = -vec3_dot(env->cam.front, env->cam.pos);
 	env->sim.view = view;
-}
-
-
-void	camera_move_inertia(t_env *e, float inertia, int mode)
-{
-	t_vec3	old;
-
-	e->cam.inertia = vec3_fmul(e->cam.inertia, inertia);
-	vec3_copy(&old, &e->cam.pos);
-	e->cam.pos = vec3_add(e->cam.pos, e->cam.inertia);
-	if (mode == 0)
-		e->cam.target = vec3_add(e->cam.target, vec3_sub(e->cam.pos, old));
 }

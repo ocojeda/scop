@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parce.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/20 09:22:15 by ocojeda-          #+#    #+#             */
+/*   Updated: 2019/01/20 15:16:56 by ocojeda-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
 int		array_len(void **tab)
@@ -23,15 +35,6 @@ GLuint	*gluint_array_copy(GLuint *array, int length, int m)
 	array = new;
 	return (new);
 }
-
-void	error(char *info)
-{
-	ft_putstr("Error: ");
-	ft_putstr(info);
-	ft_putstr("\n");
-	exit(0);
-}
-
 void	display_help(void)
 {
 	ft_putstr("[Help =0]:\n");
@@ -151,7 +154,7 @@ void	load_obj(t_env *e, char *filename)
 	e->model.vertices = (GLfloat*)malloc(sizeof(GLfloat) * 3);
 	e->model.indices = (GLuint*)malloc(sizeof(GLuint) * 3);
 	if ((fd = open(filename, O_RDWR)) == -1)
-		error("obj file opening failed.");
+		ft_error("obj file opening failed.");
 	while (get_next_line(fd, &line) > 0)
 	{
 		if (line[0] == 'v' && line[1] == ' ')
