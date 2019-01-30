@@ -7,7 +7,6 @@
 #define FOV 90
 #define CAMERA_NEAR 0.001
 #define CAMERA_FAR 100.0
-# define OPENGL_VERSION "4.0"
 
 #include <GLFW/glfw3.h>
 #include <string.h>
@@ -15,11 +14,8 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <math.h>
-
 #include "libmat4.h"
 #include "libft.h"
-
-
 #include <stdio.h>
 
 typedef struct	s_texture
@@ -46,33 +42,16 @@ typedef struct	s_flags
 	short	texture;
 }				t_flags;
 
-typedef struct	s_win
-{
-	GLFWwindow	*ptr;
-	int			w;
-	int			h;
-	float		ratio;
-}				t_win;
-
 typedef struct	s_shader
 {
 	GLuint	program;
 	GLint	mvploc;
 	GLint	cmdloc;
-	GLint	smdloc;
 	GLint	tmdloc;
 	GLint	gmdloc;
 	GLint	mmdloc;
 	GLint	texloc;
 }				t_shader;
-
-typedef struct	s_sim
-{
-	t_mat4	model;
-	t_mat4	view;
-	t_mat4	projection;
-	t_mat4	mvp;
-}				t_sim;
 
 typedef struct s_cam
 {
@@ -96,26 +75,36 @@ typedef struct	s_model
 	unsigned int	size_vertices;
 	unsigned int	num_indices;
 	t_vec3			center_axis;
-	
 	t_texture		texture;
 	float			velocity;
 	char			*filename;
+	t_mat4			model;
+	t_mat4			view;
+	t_mat4			projection;
+	t_mat4			mvp;
 }				t_model;
 
 typedef struct t_env_st 
 {
-    t_win		win;
-	t_sim		sim;
 	t_cam		cam;
 	t_flags		flags;
 	t_buffer	buffer;
 	t_shader	shader;
 	t_model		model;
-
+	GLFWwindow	*ptr;
+	int			width;
+	int			height;
+	float		ratio;
     int        flag_texture;
 }           t_env;
 
 void	init(t_env *env, int argc, char **argv);
+
+/* bitmap parser */
+void	load_bmp(t_env *env, char *filename);
+
+/*obj parse */
+void	load_obj(t_env *e, char *filename);
 
 void	camera_look_at_target(t_env *env);
 void	camera_center(t_env *env);
@@ -124,5 +113,7 @@ void	rotate(t_mat4 *m, t_vec3 v);
 
 
 void    events_scop(t_env *env);
+
+
 
 #endif

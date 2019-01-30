@@ -6,7 +6,7 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/20 09:22:26 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/01/20 15:17:16 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/01/30 18:07:06 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,18 @@ void	set_projection_matrix(t_env *env, float fov)
 	far = CAMERA_FAR;
 	near = CAMERA_NEAR;
 	s = 1 / (tan(fov * 0.5 * M_PI / 180.0));
-	mat4_set(&env->sim.projection, 0);
-	env->sim.projection.m[0] = s / env->win.ratio;
-	env->sim.projection.m[5] = s;
-	env->sim.projection.m[10] = -(far + near) / (far - near);
-	env->sim.projection.m[11] = -1;
-	env->sim.projection.m[14] = -2 * far * near / (far - near);
+	mat4_set(&env->model.projection, 0);
+	env->model.projection.m[0] = s / env->ratio;
+	env->model.projection.m[5] = s;
+	env->model.projection.m[10] = -(far + near) / (far - near);
+	env->model.projection.m[11] = -1;
+	env->model.projection.m[14] = -2 * far * near / (far - near);
 }
 
 void	init_matrices(t_env *env)
 {
-	mat4_set(&env->sim.model, IDENTITY);
-	mat4_set(&env->sim.view, IDENTITY);
+	mat4_set(&env->model.model, IDENTITY);
+	mat4_set(&env->model.view, IDENTITY);
 	set_projection_matrix(env, env->cam.fov);
 	mat4_set(&env->model.rotation, IDENTITY);
 	mat4_set(&env->model.translation, IDENTITY);
@@ -42,19 +42,19 @@ void	init_matrices(t_env *env)
 
 void	init_glfw_win(t_env *env)
 {
-	env->win.ptr = glfwCreateWindow(env->win.w, env->win.h, "scop", NULL, NULL);
-	glfwMakeContextCurrent(env->win.ptr);
-	glfwGetFramebufferSize(env->win.ptr, &env->win.w, &env->win.h);
-	glViewport(0, 0, env->win.w, env->win.h);
-	glfwSetInputMode(env->win.ptr, GLFW_STICKY_KEYS, 1);
+	env->ptr = glfwCreateWindow(env->width, env->height, "scop", NULL, NULL);
+	glfwMakeContextCurrent(env->ptr);
+	glfwGetFramebufferSize(env->ptr, &env->width, &env->height);
+	glViewport(0, 0, env->width, env->height);
+	glfwSetInputMode(env->ptr, GLFW_STICKY_KEYS, 1);
 }
 
 void	init_glfw_env(void)
 {
 	if (!glfwInit())
 		ft_error("GLFW error");
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, ft_atoi(&OPENGL_VERSION[0]));
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, ft_atoi(&OPENGL_VERSION[2]));
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -76,9 +76,9 @@ void	init(t_env *env, int argc, char **argv)
 	{
 		env->model.filename = ft_strjoin("../resources/", argv[1]);
 		env->cam.fov = FOV;
-		env->win.w = WIN_WIDTH;
-		env->win.h = WIN_HEIGHT;
-		env->win.ratio = env->win.w / (float)env->win.h;
+		env->width = WIN_WIDTH;
+		env->height = WIN_HEIGHT;
+		env->ratio = env->width / (float)env->height;
 		init_glfw_env();
 		init_glfw_win(env);
 		init_cam(env);

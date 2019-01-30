@@ -6,7 +6,7 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/20 10:42:52 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/01/20 14:29:25 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/01/30 16:07:03 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 int key_code_pressed(t_env *env, int key)
 {
-	if(glfwGetKey(env->win.ptr, key) == GLFW_PRESS)
+	if(glfwGetKey(env->ptr, key) == GLFW_PRESS)
 			return (key);
 	return (0);
 }
@@ -42,9 +42,8 @@ void translation_handler(t_env *env)
 		rotate(&env->model.rotation, vec3(0, 0, 0.5));
 	if (key_code_pressed(env, GLFW_KEY_RIGHT))
 		rotate(&env->model.rotation, vec3(0, 0, -0.5));
-
-	if (glfwGetKey(env->win.ptr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(env->win.ptr, GL_TRUE);
+	if (glfwGetKey(env->ptr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(env->ptr, GL_TRUE);
 }
 
 void    events_scop(t_env *env)
@@ -52,14 +51,14 @@ void    events_scop(t_env *env)
 	translation_handler(env);
 	rotate(&env->model.rotation, vec3(0, 0.5, 0));
 	camera_look_at_target(env);
-	env->sim.model = mat4_mul(env->model.translation, env->model.rotation);
-	if (glfwGetKey(env->win.ptr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    	glfwSetWindowShouldClose(env->win.ptr, GL_TRUE);
-    if (glfwGetKey(env->win.ptr, 32) == GLFW_PRESS)
+	env->model.model = mat4_mul(env->model.translation, env->model.rotation);
+	if (glfwGetKey(env->ptr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    	glfwSetWindowShouldClose(env->ptr, GL_TRUE);
+    if (glfwGetKey(env->ptr, 32) == GLFW_PRESS)
 	{
-        if (glfwGetKey(env->win.ptr, 32) == GLFW_RELEASE)
+        if (glfwGetKey(env->ptr, 32) == GLFW_RELEASE)
         {
 			env->flags.texture = (env->flags.texture == 0 ? 1 : 0);
         }
     }
-};
+}

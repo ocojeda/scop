@@ -6,13 +6,13 @@
 #    By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/06/28 11:23:20 by ocojeda-          #+#    #+#              #
-#    Updated: 2019/01/20 15:12:32 by ocojeda-         ###   ########.fr        #
+#    Updated: 2019/01/23 15:07:14 by ocojeda-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 
 INC = include
 

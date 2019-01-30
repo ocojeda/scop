@@ -6,7 +6,7 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/20 09:22:07 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/01/20 15:18:14 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/01/30 17:55:23 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,75 +14,13 @@
 
 void	compute_mvp_matrix(t_env *env)
 {
-	env->sim.mvp = mat4_mul(mat4_transpose(env->sim.model),
-		mat4_mul(env->sim.view, env->sim.projection));
-}
-
-
-
-void	read_header(char *filename, t_texture *texture)
-{
-	FILE	*file;
-
-	if ((file = fopen(filename, "r")) == NULL)
-		ft_error("bmp file opening (fopen) failed.");
-	fseek(file, 18, SEEK_SET);
-	fread(&texture->w, 4, 1, file);
-	fread(&texture->h, 4, 1, file);
-	fseek(file, 2, SEEK_CUR);
-	fread(&texture->bpp, 2, 1, file);
-	fclose(file);
-	texture->opp = texture->bpp / 8;
-	texture->sl = texture->w * texture->opp;
-	texture->w < 0 ? texture->w = -texture->w : 0;
-	texture->h < 0 ? texture->h = -texture->h : 0;
-	texture->size = texture->sl * texture->h;
-}
-
-void	get_image(t_texture *texture, char *buffer, int i)
-{
-	int	h;
-	int	j;
-	int	size;
-
-	h = 0;
-	size = texture->size * 2;
-	texture->img = (unsigned char*)malloc(sizeof(unsigned char) * size);
-	while (i >= 0)
-	{
-		i -= texture->sl;
-		j = 0;
-		while (j < texture->sl)
-		{
-			texture->img[h + j] = (unsigned char)buffer[i + j + 2];
-			texture->img[h + j + 1] = (unsigned char)buffer[i + j + 1];
-			texture->img[h + j + 2] = (unsigned char)buffer[i + j];
-			j += 3;
-		}
-		h += texture->sl;
-	}
-}
-
-void	load_bmp(t_env *env, char *filename)
-{
-	int		fd;
-	int		i;
-	char	*buffer;
-
-	read_header(filename, &env->model.texture);
-	buffer = (char*)malloc(sizeof(char) * env->model.texture.size + 1);
-	if ((fd = open(filename, O_RDWR)) == -1)
-		ft_error("bmp file opening failed.");
-	lseek(fd, 54, SEEK_SET);
-	i = read(fd, buffer, env->model.texture.size);
-	get_image(&env->model.texture, buffer, i);
-	ft_strdel((char**)&buffer);
-	close(fd);
+	env->model.mvp = mat4_mul(mat4_transpose(env->model.model),
+		mat4_mul(env->model.view, env->model.projection));
 }
 
 void			update_shader_uniforms(t_env *env)
 {
-	glUniformMatrix4fv(env->shader.mvploc, 1, GL_FALSE, env->sim.mvp.m);
+	glUniformMatrix4fv(env->shader.mvploc, 1, GL_FALSE, env->model.mvp.m);
 	glUniform1i(env->shader.tmdloc, env->flags.texture);
 }
 
@@ -151,7 +89,6 @@ void			build_shader_program(t_env *env)
 	shader_frag = create_shader("../Shaders/basique2D.frag", GL_FRAGMENT_SHADER);
 	env->shader.program = create_shader_program(shader_vert, shader_frag);
 	env->shader.mvploc = glGetUniformLocation(env->shader.program, "mvp");
-	env->shader.smdloc = glGetUniformLocation(env->shader.program, "smod");
 	env->shader.cmdloc = glGetUniformLocation(env->shader.program, "cmod");
 	env->shader.tmdloc = glGetUniformLocation(env->shader.program, "tmod");
 	env->shader.gmdloc = glGetUniformLocation(env->shader.program, "gmod");
@@ -210,11 +147,11 @@ int main(int argc, char **argv)
 	t_env env;
 	init(&env, argc, argv);
 	load_obj(&env, env.model.filename);
-	load_bmp(&env, "../resources/chaton.bmp");
+	load_bmp(&env, "../resources/duck_original.bmp");
 	build_shader_program(&env);
 	create_buffers(&env, GL_DYNAMIC_DRAW);
 	glEnable(GL_DEPTH_TEST);
-	while (!glfwWindowShouldClose(env.win.ptr))
+	while (!glfwWindowShouldClose(env.ptr))
 	{
 		glfwPollEvents();
 		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
@@ -227,7 +164,7 @@ int main(int argc, char **argv)
 		glBindVertexArray(env.buffer.vao);
 		glDrawElements(GL_TRIANGLES, env.model.num_indices, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
-		glfwSwapBuffers(env.win.ptr);
+		glfwSwapBuffers(env.ptr);
 	}
 	clean_glfw(&env);
 	return 0;

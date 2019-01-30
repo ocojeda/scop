@@ -6,7 +6,7 @@
 #    By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/20 09:24:56 by ocojeda-          #+#    #+#              #
-#    Updated: 2019/01/20 09:24:57 by ocojeda-         ###   ########.fr        #
+#    Updated: 2019/01/23 15:07:41 by ocojeda-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ INC_PATH = ./include/
 
 NAME = libmat4.a
 CC = gcc
-CFGLAGS = -Werror -Wextra -Wall
+CFGLAGS = -Werror -Wextra -Wall -g
 
 SRC_NAME  = mat4_set.c mat4_copy.c mat4_add.c mat4_sub.c mat4_mul.c \
 			mat4_transpose.c mat4_scale.c mat4_rotate.c \

@@ -5,8 +5,6 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 color;
 
-# define PI 3.14159265359
-
 uniform mat4	mvp;
 uniform int		cmod;
 uniform bool	mmod;
@@ -15,27 +13,22 @@ flat out vec4	fragment_color_f;
 smooth out vec4	fragment_color_s;
 out	vec2		texture_coordinates;
 
-vec2	cylinder_mapping()
+float	ft_map(float x, float lenght, float min, float max)
 {
-	float	u;
-	float	v;
-
-	u = 0.5 + atan(position.z, position.x) / PI * 0.5;
-	v = position.y / 10.0;
-	return (vec2(u, v) * 15);
+	float	a;
+	return (a = (x / (lenght / (max - min))) + min);
 }
 
+float round_color(float col)
+{
+	if (col < 0)
+		col = col * -1;
+	return (ft_map(col, 3, 0, 1));
+}
 void	main()
 {
 	gl_Position = mvp * vec4(position, 1.0f);
-	if (cmod == 0)
-		fragment_color_s = vec4(position.y * 0.4f + 0.4f,
-		position.z * 0.1 + position.y * 0.4f + 0.1f, 0.2f, 1.0f);
-	if (cmod == 1)
-		fragment_color_s = vec4(position * 0.4f + 0.4f, 1.0f);
+	fragment_color_s = vec4(round_color(position.x), round_color(position.y), round_color(position.z), 1);
 	fragment_color_f = fragment_color_s;
-	if (mmod)
-		texture_coordinates = cylinder_mapping();
-	else
-		texture_coordinates = vec2(position.x * 2, position.y * 2);
+	texture_coordinates = vec2(position.x / 2, position.y / -1);
 }

@@ -6,11 +6,11 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/20 09:21:44 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/01/20 14:58:24 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/01/30 16:05:51 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "scop.h"
+#include "scop.h"
 
 void	camera_look_at_target(t_env *env)
 {
@@ -34,5 +34,5 @@ void	camera_look_at_target(t_env *env)
 	view.m[12] = -vec3_dot(env->cam.right, env->cam.pos);
 	view.m[13] = -vec3_dot(tmp, env->cam.pos);
 	view.m[14] = -vec3_dot(env->cam.front, env->cam.pos);
-	env->sim.view = view;
+	env->model.view = view;
 }
