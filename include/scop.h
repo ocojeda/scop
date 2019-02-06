@@ -111,6 +111,8 @@ void	camera_center(t_env *env);
 void	translate(t_mat4 *m, t_vec3 v);
 void	rotate(t_mat4 *m, t_vec3 v);
 
+void	init_matrices(t_env *env);
+
 
 void    events_scop(t_env *env);
 

@@ -6,7 +6,7 @@
 #    By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/22 11:21:21 by ocojeda-          #+#    #+#              #
-#    Updated: 2019/01/23 15:06:58 by ocojeda-         ###   ########.fr        #
+#    Updated: 2019/02/01 13:31:04 by ocojeda-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ INC_PATH = ./include/ $(LIB_PATH)libft/include/ $(LIB_PATH)glfw/include/ \
 GCC_FLGS = -g #-Werror -Wextra -Wall -pedantic -g3
 GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo
 
-SRC_NAME = main.c gl_funcs.c events_scop.c matrix.c parce.c camera.c bitmap_parser.c
+SRC_NAME = main.c gl_funcs.c events_scop.c matrix.c parce.c camera.c bitmap_parser.c matrix_ops.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 LIB_NAME = libft libmat4 glfw/src
