@@ -1,98 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parce.c                                            :+:      :+:    :+:   */
+/*   parse_obj.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/20 09:22:15 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/01/20 15:16:56 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/02/07 15:27:23 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scop.h"
-
-int		array_len(void **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab[i] != NULL)
-		i++;
-	return (i);
-}
-
-GLuint	*gluint_array_copy(GLuint *array, int length, int m)
-{
-	int		i;
-	GLuint	*new;
-
-	i = -1;
-	new = (GLuint*)malloc(sizeof(GLuint) * length);
-	while (++i < length - m)
-		new[i] = array[i];
-	free(array);
-	array = new;
-	return (new);
-}
-void	display_help(void)
-{
-	ft_putstr("[Help =0]:\n");
-	exit(0);
-}
-
-GLfloat	*append_vertices(GLfloat *array, char *line, int *length)
-{
-	int		i;
-	int		j;
-	char	**tab;
-	GLfloat	*new;
-
-	tab = ft_strsplit(&line[1], ' ');
-	*length += 6;
-	new = (GLfloat*)malloc(sizeof(GLfloat) * *length);
-	i = -1;
-	while (++i < *length - 6)
-		new[i] = array[i];
-	free(array);
-	array = new;
-	j = -1;
-	while (tab[++j] != NULL)
-	{
-		array[*length - 6 + j] = (GLfloat)ft_atof(tab[j]);
-		array[*length - 3 + j] = j * 0.66f;
-		ft_strdel(&tab[j]);
-	}
-	ft_strdel(&tab[j]);
-	free(tab);
-	tab = NULL;
-	return (array);
-}
-
-GLuint	*append_indices(GLuint *array, char *line, int *length)
-{
-	int		j;
-	int		m;
-	char	**tab;
-
-	tab = ft_strsplit(&line[1], ' ');
-	m = array_len((void**)tab) == 4 ? 6 : 3;
-	*length += m;
-	array = gluint_array_copy(array, *length, m);
-	j = -1;
-	while (++j < 3)
-	{
-		array[*length - m + j] = (GLuint)ft_atoi(tab[j]) - 1;
-		if (m == 6)
-			array[*length - m + 3 + j] =
-			(GLuint)ft_atoi(tab[j > 0 ? j + 1 : 0]) - 1;
-		ft_strdel(&tab[j]);
-	}
-	ft_strdel(&tab[j]);
-	free(tab);
-	tab = NULL;
-	return (array);
-}
 
 t_vec3	compute_center_axis(GLfloat *vertices, int num_vertices)
 {
@@ -118,7 +36,6 @@ t_vec3	compute_center_axis(GLfloat *vertices, int num_vertices)
 	return (center);
 }
 
-
 void	center_vertices(t_env *env, int length)
 {
 	int		i;
@@ -140,6 +57,24 @@ void	center_vertices(t_env *env, int length)
 		i += 6;
 	}
 	env->model.center_axis = vec3(0, 0, 0);
+}
+
+void	set_obj_values(t_env *env, int v, int f)
+{
+	int i;
+
+	i = 0;
+	env->model.depth = 0;
+	while (env->model.vertices[i])
+	{
+		if (env->model.depth < env->model.vertices[i + 2])
+			env->model.depth = env->model.vertices[i + 2];
+		i += 6;
+	}
+	env->model.size_vertices = v * sizeof(GLfloat);
+	env->model.size_indices = f * sizeof(GLuint);
+	env->model.num_indices = f;
+	env->model.center_axis = compute_center_axis(env->model.vertices, v);
 }
 
 void	load_obj(t_env *e, char *filename)
@@ -164,10 +99,7 @@ void	load_obj(t_env *e, char *filename)
 		ft_strdel(&line);
 	}
 	ft_strdel(&line);
-	e->model.size_vertices = v * sizeof(GLfloat);
-	e->model.size_indices = f * sizeof(GLuint);
-	e->model.num_indices = f;
-	e->model.center_axis = compute_center_axis(e->model.vertices, v);
+	set_obj_values(e, v, f);
 	close(fd);
 	center_vertices(e, v);
 }

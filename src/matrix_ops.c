@@ -6,10 +6,9 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/01 13:29:55 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/02/01 13:30:07 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/02/07 16:27:29 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "scop.h"
 
@@ -19,8 +18,8 @@ void	set_projection_matrix(t_env *env, float fov)
 	float	far;
 	float	near;
 
-	far = CAMERA_FAR;
-	near = CAMERA_NEAR;
+	far = 10000;
+	near = 0.001;
 	s = 1 / (tan(fov * 0.5 * M_PI / 180.0));
 	mat4_set(&env->model.projection, 0);
 	env->model.projection.m[0] = s / env->ratio;

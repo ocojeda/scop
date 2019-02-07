@@ -6,7 +6,7 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/22 11:22:30 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/01/23 17:54:10 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/02/07 17:15:47 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,18 @@ void	load_bmp(t_env *env, char *filename)
 	get_image(&env->model.texture, buffer, i);
 	ft_strdel((char**)&buffer);
 	close(fd);
+}
+
+void	create_texture(t_env *env)
+{
+	glGenTextures(1, &env->buffer.texture);
+	glBindTexture(GL_TEXTURE_2D, env->buffer.texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->model.texture.w,
+	env->model.texture.h, 0, GL_RGB, GL_UNSIGNED_BYTE, env->model.texture.img);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
