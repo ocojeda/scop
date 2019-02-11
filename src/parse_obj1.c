@@ -6,7 +6,7 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 15:22:50 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/02/07 16:20:35 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/02/09 18:12:01 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,26 @@ GLuint	*gluint_array_copy(GLuint *array, int length, int m)
 	return (new);
 }
 
+int		check_obj(char *filename)
+{
+	char	**check;
+	int		i;
+
+	i = 0;
+	check = ft_strsplit(filename, '.');
+	while (check[i])
+		i++;
+	if (i == 2)
+	{
+		if (ft_strcmp(check[1], "obj") == 0)
+		{
+			free_splited_str(check);
+			return (0);
+		}
+	}
+	return (1);
+}
+
 GLfloat	*append_vertices(GLfloat *array, char *line, int *length)
 {
 	int		i;
@@ -55,7 +75,6 @@ GLfloat	*append_vertices(GLfloat *array, char *line, int *length)
 	while (tab[++j] != NULL)
 	{
 		array[*length - 6 + j] = (GLfloat)ft_atof(tab[j]);
-		array[*length - 3 + j] = j * 0.66f;
 		ft_strdel(&tab[j]);
 	}
 	ft_strdel(&tab[j]);

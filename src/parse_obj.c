@@ -6,13 +6,13 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/20 09:22:15 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/02/07 15:27:23 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/02/09 17:46:21 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scop.h"
 
-t_vec3	compute_center_axis(GLfloat *vertices, int num_vertices)
+t_vec3	center_search(GLfloat *vertices, int num_vertices)
 {
 	int		i;
 	t_vec3	max;
@@ -36,27 +36,18 @@ t_vec3	compute_center_axis(GLfloat *vertices, int num_vertices)
 	return (center);
 }
 
-void	center_vertices(t_env *env, int length)
+void	center_all_vertices(t_env *env, int length)
 {
 	int		i;
-	float	tx;
-	float	theta;
 
 	i = 0;
-	theta = 90 * (M_PI / 180);
 	while (i < length)
 	{
 		env->model.vertices[i] -= env->model.center_axis.v[0];
 		env->model.vertices[i + 1] -= env->model.center_axis.v[1];
 		env->model.vertices[i + 2] -= env->model.center_axis.v[2];
-		tx = env->model.vertices[i] * cos(theta) -
-			env->model.vertices[i + 2] * sin(theta);
-		env->model.vertices[i + 2] = env->model.vertices[i] * sin(theta) +
-			env->model.vertices[i + 2] * cos(theta);
-		env->model.vertices[i] = tx;
 		i += 6;
 	}
-	env->model.center_axis = vec3(0, 0, 0);
 }
 
 void	set_obj_values(t_env *env, int v, int f)
@@ -74,7 +65,7 @@ void	set_obj_values(t_env *env, int v, int f)
 	env->model.size_vertices = v * sizeof(GLfloat);
 	env->model.size_indices = f * sizeof(GLuint);
 	env->model.num_indices = f;
-	env->model.center_axis = compute_center_axis(env->model.vertices, v);
+	env->model.center_axis = center_search(env->model.vertices, v);
 }
 
 void	load_obj(t_env *e, char *filename)
@@ -88,7 +79,7 @@ void	load_obj(t_env *e, char *filename)
 	f = 0;
 	e->model.vertices = (GLfloat*)malloc(sizeof(GLfloat) * 3);
 	e->model.indices = (GLuint*)malloc(sizeof(GLuint) * 3);
-	if ((fd = open(filename, O_RDWR)) == -1)
+	if ((fd = open(filename, O_RDWR)) == -1 || check_obj(filename))
 		ft_error("obj file opening failed.");
 	while (get_next_line(fd, &line) > 0)
 	{
@@ -101,5 +92,5 @@ void	load_obj(t_env *e, char *filename)
 	ft_strdel(&line);
 	set_obj_values(e, v, f);
 	close(fd);
-	center_vertices(e, v);
+	center_all_vertices(e, v);
 }

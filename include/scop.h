@@ -6,7 +6,7 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 15:47:20 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/02/07 17:17:11 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/02/09 18:29:12 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ typedef struct	s_model
 	unsigned int	num_indices;
 	t_vec3			center_axis;
 	t_texture		texture;
-	float			velocity;
 	char			*filename;
 	float			depth;
 	t_mat4			model;
@@ -117,5 +116,6 @@ void			init_glfw_win(t_env *env);
 void			init_glfw_env(void);
 GLfloat			*append_vertices(GLfloat *array, char *line, int *length);
 GLuint			*append_indices(GLuint *array, char *line, int *length);
+int				check_obj(char *filename);
 
 #endif

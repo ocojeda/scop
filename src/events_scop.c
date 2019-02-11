@@ -6,7 +6,7 @@
 /*   By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/20 10:42:52 by ocojeda-          #+#    #+#             */
-/*   Updated: 2019/02/07 15:40:19 by ocojeda-         ###   ########.fr       */
+/*   Updated: 2019/02/09 19:24:32 by ocojeda-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ void	translation_handler(t_env *env)
 		rotate(&env->model.rotation, vec3(0, 0, 0.5));
 	if (key_code_pressed(env, GLFW_KEY_RIGHT))
 		rotate(&env->model.rotation, vec3(0, 0, -0.5));
-	if (glfwGetKey(env->ptr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(env->ptr, GL_TRUE);
 }
 
 void	events_scop(t_env *env)

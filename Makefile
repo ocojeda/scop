@@ -6,7 +6,7 @@
 #    By: ocojeda- <ocojeda-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/22 11:21:21 by ocojeda-          #+#    #+#              #
-#    Updated: 2019/02/07 15:24:12 by ocojeda-         ###   ########.fr        #
+#    Updated: 2019/02/09 19:20:13 by ocojeda-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ GCC_FLGS = -g -Werror -Wextra -Wall
 GCC_LIBS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo
 
 SRC_NAME = main.c init.c events_scop.c matrix.c parse_obj.c camera.c bitmap_parser.c matrix_ops.c \
-shader_parser.c init_aux.c init_glfw.c parse_obj1.c
+shader_parser.c init_glfw.c parse_obj1.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 LIB_NAME = libft libmat4 glfw/src
